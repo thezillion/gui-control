@@ -2,11 +2,19 @@
 #include <unistd.h>
 #include <chrono>
 #include <ctime>
+#include <vector>
 #include <opencv2/opencv.hpp>
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 
 using namespace cv;
+using namespace std;
+Mat colour, src_gray;
+ int thresh = 100;
+ int max_thresh = 255;
+ RNG rng(12345);
+
+void thresh_callback(int, void* );
 
 int main(int, char**)
 {
@@ -19,6 +27,7 @@ int main(int, char**)
     namedWindow("CameraFeed",1);
     namedWindow("EdgeFeed",1);
     namedWindow("Control", 1);
+    namedWindow( "Hull demo", 1);
 
     int iLowH = 0, iHighH = 179, iLowS = 0, iHighS = 255, iLowV = 0, iHighV = 255;
     //Create trackbars in "Control" window
@@ -33,17 +42,88 @@ int main(int, char**)
 
     for(;;)
     {
-        Mat frame, colour, imgHSV;
+        Mat frame0, frame, imgHSV;
         cap >> frame; // get a new frame from camera
         imshow("CameraFeed", frame);
+        // fastNlMeansDenoisingColoredMulti(frame0, frame, 10);
+        GaussianBlur(frame, frame, Size(7,7), 0, 0);
+        // imshow("Blur1", frame);
+
+        GaussianBlur(frame, frame, Size(7,7), 0, 0);
+        // imshow("Blur2", frame);
 
         cvtColor(frame, imgHSV, COLOR_BGR2HSV);
         inRange(imgHSV, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), colour);
+        // inRange(imgHSV, Scalar(19, 24, 83), Scalar(86, 142, 255), colour);
         imshow("EdgeFeed", colour);
+
+        thresh_callback(0, 0);
 
         int c = waitKey(30);
         if(c == 27) break;            //Escape key
     }
     // the camera will be deinitialized automatically in VideoCapture destructor
     return 0;
+}
+/** @function thresh_callback */
+void thresh_callback(int, void* ){
+    Mat src_copy = colour.clone();
+    Mat threshold_output;
+    Mat moms = Mat::zeros( src_copy.size(), CV_8UC3 );
+    vector<vector<Point> > contours;
+    vector<vector<Point> > contours1;
+    vector<Vec4i> hierarchy;
+
+    /// Detect edges using Threshold
+    threshold( src_copy, threshold_output, thresh, 255, THRESH_BINARY );
+
+  
+    /// Find contours
+    findContours( threshold_output, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0) );
+    // find moments of the image
+
+    //found the moments for each contour differently and considered only those with area >100
+    vector<vector<Point>> hull( contours.size() );
+    Mat drawing = Mat::zeros( threshold_output.size(), CV_8UC3 );
+    Mat drawing2 = Mat::zeros( threshold_output.size(), CV_8UC3 );
+    for(int i=0; i< contours.size(); i++){
+        Moments m = moments(contours[i], true);
+        if(m.m00<100) continue;
+        Point p(m.m10/m.m00, m.m01/m.m00);
+
+        
+        // coordinates of centroid
+        // cout<< Mat(p)<< endl;
+        
+        // show the image with a point mark at the centroid
+        circle(moms, p, 5, Scalar(255, 255, 255), -1);
+
+
+        convexHull( Mat(contours[i]), hull[i], false );
+
+        Scalar color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
+        drawContours( drawing, hull, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
+        fillConvexPoly( drawing2, contours[i], 255);
+    }
+
+    imshow( "Hull demo", drawing );
+    imshow( "Points", moms);
+    imshow( "Polygons", drawing2);
+
+    findContours( threshold_output, contours1, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0) );
+    vector<vector<Point>> hull1( contours1.size() );
+    Mat drawing3 = Mat::zeros( threshold_output.size(), CV_8UC3 );
+    for(int i=0; i< contours1.size(); i++){
+        Moments m = moments(contours1[i], true);
+        if(m.m00<100) continue;
+        Point p(m.m10/m.m00, m.m01/m.m00);
+
+        
+        // coordinates of centroid
+        // cout<< Mat(p)<< endl;
+        
+        // show the image with a point mark at the centroid
+        circle(drawing3, p, 5, Scalar(255, 255, 255), -1);
+    }
+    imshow( "New Points", drawing3);
 }

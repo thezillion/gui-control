@@ -25,8 +25,8 @@ int main(int, char**)
         std::chrono::duration<double> elapsed_seconds = end-start;
         if(elapsed_seconds.count()>0.1){
             cvtColor(frame, edges, COLOR_BGR2GRAY);
-            GaussianBlur(edges, edges, Size(7,7), 1.5, 1.5);
-            Canny(edges, edges, 3, 30, 3);
+            GaussianBlur(edges, edges, Size(99,99), 1.5, 1.5);
+            Canny(edges, edges, 3, 80, 3);
             imshow("EdgeFeed", edges);
             start = end;
         }
