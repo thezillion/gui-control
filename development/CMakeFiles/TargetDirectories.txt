@@ -1,0 +1,3 @@
+/home/george/Others/gui-control/Development/CMakeFiles/rebuild_cache.dir
+/home/george/Others/gui-control/Development/CMakeFiles/Development.dir
+/home/george/Others/gui-control/Development/CMakeFiles/edit_cache.dir

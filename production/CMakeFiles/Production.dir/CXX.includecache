@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/media/georgeshanti/Data/Others/gui-control/production/Production.cpp
+stdio.h
+-
+unistd.h
+-
+chrono
+-
+ctime
+-
+vector
+-
+opencv2/opencv.hpp
+-
+opencv2/highgui/highgui.hpp
+/media/georgeshanti/Data/Others/gui-control/production/opencv2/highgui/highgui.hpp
+opencv2/imgproc/imgproc.hpp
+/media/georgeshanti/Data/Others/gui-control/production/opencv2/imgproc/imgproc.hpp
+

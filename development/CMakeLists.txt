@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 2.8)
+project( Development )
+find_package( OpenCV REQUIRED )
+include_directories( ${OpenCV_INCLUDE_DIRS} )
+add_executable( Development Development.cpp )
+target_link_libraries( Development ${OpenCV_LIBS} )

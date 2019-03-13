@@ -1,0 +1,3 @@
+/media/georgeshanti/Data/Others/gui-control/production/CMakeFiles/rebuild_cache.dir
+/media/georgeshanti/Data/Others/gui-control/production/CMakeFiles/Production.dir
+/media/georgeshanti/Data/Others/gui-control/production/CMakeFiles/edit_cache.dir
