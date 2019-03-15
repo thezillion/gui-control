@@ -10,63 +10,74 @@
 using namespace cv;
 using namespace std;
 Mat colour, src_gray;
- int thresh = 100;
- int max_thresh = 255;
- RNG rng(12345);
+int thresh = 100;
+int max_thresh = 255;
+RNG rng(12345);
 
-void thresh_callback(int, void* );
+class ColorDetectionModule {
+    public:
+        void thresh_callback();
+};
 
-int main(int, char**)
-{
-    VideoCapture cap(0); // open the default camera
-    if(!cap.isOpened())  // check if we succeeded
-        return -1;
+class InitModule {
 
-    auto start = std::chrono::system_clock::now();
+    std::chrono::system_clock::time_point start;
+    int iLowH, iHighH, iLowS, iHighS, iLowV, iHighV;
 
-    namedWindow("CameraFeed",1);
-    namedWindow("EdgeFeed",1);
-    namedWindow("Control", 1);
-    namedWindow( "Hull demo", 1);
+    public:
 
-    int iLowH = 0, iHighH = 179, iLowS = 0, iHighS = 255, iLowV = 0, iHighV = 255;
-    //Create trackbars in "Control" window
-    createTrackbar("LowH", "Control", &iLowH, 179); //Hue (0 - 179)
-    createTrackbar("HighH", "Control", &iHighH, 179);
+    InitModule() : iLowH(0), iHighH(179), iLowS(0),iHighS(255),iLowV(0),iHighV(255) {}
 
-    createTrackbar("LowS", "Control", &iLowS, 255); //Saturation (0 - 255)
-    createTrackbar("HighS", "Control", &iHighS, 255);
+    void showTrackbars() {
+        // namedWindow("CameraFeed",1);
+        // namedWindow("EdgeFeed",1);
+        namedWindow("Control", 1);
+        // namedWindow( "Hull demo", 1);
 
-    createTrackbar("LowV", "Control", &iLowV, 255); //Value (0 - 255)
-    createTrackbar("HighV", "Control", &iHighV, 255);
+        //Create trackbars in "Control" window
+        createTrackbar("LowH", "Control", &iLowH, 179); //Hue (0 - 179)
+        createTrackbar("HighH", "Control", &iHighH, 179);
 
-    for(;;)
-    {
-        Mat frame0, frame, imgHSV;
-        cap >> frame; // get a new frame from camera
-        imshow("CameraFeed", frame);
-        // fastNlMeansDenoisingColoredMulti(frame0, frame, 10);
-        GaussianBlur(frame, frame, Size(7,7), 0, 0);
-        // imshow("Blur1", frame);
+        createTrackbar("LowS", "Control", &iLowS, 255); //Saturation (0 - 255)
+        createTrackbar("HighS", "Control", &iHighS, 255);
 
-        GaussianBlur(frame, frame, Size(7,7), 0, 0);
-        // imshow("Blur2", frame);
-
-        cvtColor(frame, imgHSV, COLOR_BGR2HSV);
-        inRange(imgHSV, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), colour);
-        // inRange(imgHSV, Scalar(19, 24, 83), Scalar(86, 142, 255), colour);
-        imshow("EdgeFeed", colour);
-
-        thresh_callback(0, 0);
-
-        int c = waitKey(30);
-        if(c == 27) break;            //Escape key
+        createTrackbar("LowV", "Control", &iLowV, 255); //Value (0 - 255)
+        createTrackbar("HighV", "Control", &iHighV, 255);
     }
-    // the camera will be deinitialized automatically in VideoCapture destructor
-    return 0;
-}
-/** @function thresh_callback */
-void thresh_callback(int, void* ){
+
+    void loop(VideoCapture &cap) {
+        ColorDetectionModule c;
+
+        for(;;) {
+            Mat frame0, frame, imgHSV;
+            cap >> frame; // get a new frame from camera
+            imshow("CameraFeed", frame);
+            // fastNlMeansDenoisingColoredMulti(frame0, frame, 10);
+            GaussianBlur(frame, frame, Size(7,7), 0, 0);
+            // imshow("Blur1", frame);
+
+            GaussianBlur(frame, frame, Size(7,7), 0, 0);
+            // imshow("Blur2", frame);
+
+            cvtColor(frame, imgHSV, COLOR_BGR2HSV);
+            inRange(imgHSV, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), colour);
+            // inRange(imgHSV, Scalar(19, 24, 83), Scalar(86, 142, 255), colour);
+            imshow("EdgeFeed", colour);
+
+            c.thresh_callback();
+
+            int c = waitKey(30);
+            if(c == 27) break;            //Escape key
+        }
+    }
+
+    void init(VideoCapture &cap) {
+        loop(cap);
+    }
+};
+
+void ColorDetectionModule::thresh_callback() {
+    /** @function thresh_callback */
     Mat src_copy = colour.clone();
     Mat threshold_output;
     Mat moms = Mat::zeros( src_copy.size(), CV_8UC3 );
@@ -77,7 +88,7 @@ void thresh_callback(int, void* ){
     /// Detect edges using Threshold
     threshold( src_copy, threshold_output, thresh, 255, THRESH_BINARY );
 
-  
+
     /// Find contours
     findContours( threshold_output, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0) );
     // find moments of the image
@@ -127,3 +138,23 @@ void thresh_callback(int, void* ){
     }
     imshow( "New Points", drawing3);
 }
+
+int main(int, char**)
+{
+    VideoCapture cap(0); // open the default camera
+    if(!cap.isOpened())  // check if we succeeded
+        return -1;
+
+    // for(;;) {
+    //     Mat frame0, frame, imgHSV;
+    //     cap >> frame; // get a new frame from camera
+    //     imshow("CameraFeed", frame);
+    //     int c = waitKey(30);
+    //     if(c == 27) break;            //Escape key
+    // }
+
+    InitModule i;
+    i.init(cap);
+    return 0;
+}
+
