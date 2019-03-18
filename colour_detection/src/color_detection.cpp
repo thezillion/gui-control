@@ -45,27 +45,27 @@ void ColorDetectionModule::thresh_callback() {
 
         Scalar color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
         drawContours( drawing, hull, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
-        fillConvexPoly( drawing2, contours[i], 255);
+        // fillConvexPoly( drawing2, contours[i], 255);
     }
 
     imshow( "Hull demo", drawing );
     imshow( "Points", moms);
-    imshow( "Polygons", drawing2);
+    // imshow( "Polygons", drawing2);
 
-    findContours( threshold_output, contours1, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0) );
-    vector<vector<Point>> hull1( contours1.size() );
-    Mat drawing3 = Mat::zeros( threshold_output.size(), CV_8UC3 );
-    for(int i=0; i< contours1.size(); i++){
-        Moments m = moments(contours1[i], true);
-        if(m.m00<100) continue;
-        Point p(m.m10/m.m00, m.m01/m.m00);
+    // findContours( threshold_output, contours1, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0) );
+    // vector<vector<Point>> hull1( contours1.size() );
+    // Mat drawing3 = Mat::zeros( threshold_output.size(), CV_8UC3 );
+    // for(int i=0; i< contours1.size(); i++){
+    //     Moments m = moments(contours1[i], true);
+    //     if(m.m00<100) continue;
+    //     Point p(m.m10/m.m00, m.m01/m.m00);
 
         
-        // coordinates of centroid
-        // cout<< Mat(p)<< endl;
+    //     // coordinates of centroid
+    //     // cout<< Mat(p)<< endl;
         
-        // show the image with a point mark at the centroid
-        circle(drawing3, p, 5, Scalar(255, 255, 255), -1);
-    }
-    imshow( "New Points", drawing3);
+    //     // show the image with a point mark at the centroid
+    //     circle(drawing3, p, 5, Scalar(255, 255, 255), -1);
+    // }
+    // imshow( "New Points", drawing3);
 }

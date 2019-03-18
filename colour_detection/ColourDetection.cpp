@@ -14,6 +14,7 @@ int main(int, char**)
         return -1;
 
     InitModule i;
+    i.showTrackbars();
     i.init(cap);
     return 0;
 }
