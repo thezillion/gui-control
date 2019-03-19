@@ -3,6 +3,7 @@
 #include "opencv2/imgproc/imgproc.hpp"
 
 #include "../include/fingertip_detection.hpp"
+#include "../include/fingertip.hpp"
 
 using namespace cv;
 using namespace std;
@@ -28,6 +29,8 @@ void FingertipDetectionModule::thresh_callback() {
     vector<vector<Point>> hull( contours.size() );
     Mat drawing = Mat::zeros( threshold_output.size(), CV_8UC3 );
     Mat drawing2 = Mat::zeros( threshold_output.size(), CV_8UC3 );
+    Fingertip fingers[4];
+    int j=0;
     for(int i=0; i< contours.size(); i++){
         Moments m = moments(contours[i], true);
         if(m.m00<100) continue;
@@ -39,33 +42,37 @@ void FingertipDetectionModule::thresh_callback() {
         
         // show the image with a point mark at the centroid
         circle(moms, p, 5, Scalar(255, 255, 255), -1);
-
-
+        if(j<4){
+            fingers[j] = Fingertip(p.x, p.y);
+            j++;
+        }
         convexHull( Mat(contours[i]), hull[i], false );
 
         Scalar color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
         drawContours( drawing, hull, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
         // fillConvexPoly( drawing2, contours[i], 255);
     }
+    Mat pic = cv::Mat::zeros(125,250,CV_8U);
+    if(j>0){
+        int direction, distance;
+        Hand h(fingers, j);
+        if(current.x==0 && current.y==0)
+            current = h;
+        else
+            current.distanceAndDirectionFrom(h,distance,direction);
+        string str = string("Position: ") + to_string(h.x) + string(" ") + to_string(h.y);
+        string str1 = string("Distance: ") + to_string(distance);
+        string str2 = string("Direction: ") + to_string(direction);
+        putText(pic, str,cv::Point(25,25), FONT_HERSHEY_SIMPLEX, 0.5,    cv::Scalar(255),1,8,false);
+        putText(pic, str1,cv::Point(25,50), FONT_HERSHEY_SIMPLEX, 0.5,    cv::Scalar(255),1,8,false);
+        putText(pic, str2,cv::Point(25,75), FONT_HERSHEY_SIMPLEX, 0.5,    cv::Scalar(255),1,8,false);
+    }
+    else{
+        string str = string("Not enough!!");
+        putText(pic, str,cv::Point(25,25), FONT_HERSHEY_SIMPLEX, 0.5,    cv::Scalar(255),1,8,false);
+    }
+    imshow( "Stats", pic);
 
     imshow( "Hull demo", drawing );
     imshow( "Points", moms);
-    // imshow( "Polygons", drawing2);
-
-    // findContours( threshold_output, contours1, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0) );
-    // vector<vector<Point>> hull1( contours1.size() );
-    // Mat drawing3 = Mat::zeros( threshold_output.size(), CV_8UC3 );
-    // for(int i=0; i< contours1.size(); i++){
-    //     Moments m = moments(contours1[i], true);
-    //     if(m.m00<100) continue;
-    //     Point p(m.m10/m.m00, m.m01/m.m00);
-
-        
-    //     // coordinates of centroid
-    //     // cout<< Mat(p)<< endl;
-        
-    //     // show the image with a point mark at the centroid
-    //     circle(drawing3, p, 5, Scalar(255, 255, 255), -1);
-    // }
-    // imshow( "New Points", drawing3);
 }

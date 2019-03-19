@@ -1,3 +1,6 @@
+#ifndef COLOR_DETECTION
+#define COLOR_DETECTION
+
 #include <opencv2/opencv.hpp>
 #include "../include/fingertip_detection.hpp"
 
@@ -5,7 +8,6 @@ using namespace cv;
 
 class ColorDetectionModule {
 
-    // std::chrono::system_clock::time_point start;
     int iLowH, iHighH, iLowS, iHighS, iLowV, iHighV;
     Mat& frame;
     Mat color;
@@ -22,3 +24,5 @@ class ColorDetectionModule {
     void showTrackbars();
     void getColor();
 };
+
+#endif
