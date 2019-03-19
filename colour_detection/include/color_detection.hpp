@@ -1,15 +1,24 @@
 #include <opencv2/opencv.hpp>
+#include "../include/fingertip_detection.hpp"
 
 using namespace cv;
 
 class ColorDetectionModule {
+
+    // std::chrono::system_clock::time_point start;
+    int iLowH, iHighH, iLowS, iHighS, iLowV, iHighV;
+    Mat& frame;
+    Mat color;
+    FingertipDetectionModule ftdm;
+
     int thresh = 100;
     int max_thresh = 255;
-    RNG& rng;
-    Mat& colour;
+    RNG rng = RNG(12345);
 
     public:
-        ColorDetectionModule(int a, int b, RNG& c, Mat& d): thresh(a), max_thresh(b), rng(c), colour(d) {}
 
-        void thresh_callback();
+    ColorDetectionModule(Mat &a) : iLowH(0), iHighH(179), iLowS(0),iHighS(255),iLowV(0),iHighV(255),frame(a),color(),ftdm(color) {}
+
+    void showTrackbars();
+    void getColor();
 };
