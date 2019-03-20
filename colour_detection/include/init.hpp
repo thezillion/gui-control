@@ -4,7 +4,6 @@ using namespace cv;
 
 class InitModule {
 
-    // std::chrono::system_clock::time_point start;
     int iLowH, iHighH, iLowS, iHighS, iLowV, iHighV;
 
     public:
@@ -13,8 +12,8 @@ class InitModule {
 
     void showTrackbars();
 
-    void loop(VideoCapture&);
+    void loop(cv::VideoCapture&);
 
-    void init(VideoCapture&);
+    void init(cv::VideoCapture&);
 
 };
