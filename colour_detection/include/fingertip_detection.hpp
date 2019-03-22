@@ -3,6 +3,7 @@
 
 #include <opencv2/opencv.hpp>
 #include "fingertip.hpp"
+#include "fingertip_tracking.hpp"
 using namespace cv;
 
 class FingertipDetectionModule {
@@ -11,9 +12,10 @@ class FingertipDetectionModule {
     RNG rng;
     Mat& colour;
     Hand current;
+    FingertipTrackingModule fttm;
 
     public:
-        FingertipDetectionModule(Mat& a): thresh(100), max_thresh(255), rng(12345), colour(a),current() {}
+        FingertipDetectionModule(Mat& a): thresh(100), max_thresh(255), rng(12345), colour(a),current(),fttm(a) {};
 
         void thresh_callback();
 };

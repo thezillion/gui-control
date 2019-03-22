@@ -1,26 +1,40 @@
 #ifndef FINGERTIP
 #define FINGERTIP
 
+#include <opencv2/opencv.hpp>
+
 #define NONE 0
 #define LEFT 1
 #define RIGHT 2
 #define UP 3
 #define DOWN 4
 
-class Fingertip{
+class Fingertip : public cv::Point{
     public:
-        int x, y; //Coordinates of fingertip
-        Fingertip(): x(0), y(0) {};
-        Fingertip(int a, int b): x(a), y(b) {};
+        Fingertip(): cv::Point() {};
+        Fingertip(int a, int b): cv::Point(a,b) {};
 };
 
-class Hand{
+class Hand : public cv::Point{
     public:
-        int x, y;
-        Hand(): x(0),y(0){};
+        Hand(): cv::Point(),fingers(0) {};
         Hand(Fingertip fingers[], int number);
-        int fingers, motion;
+        int fingers;
         void distanceAndDirectionFrom(Hand& a, int& distance, int& direction);
+};
+
+class Gesture{
+
+    public:
+        int fingers, direction;
+        Gesture(): fingers(0),direction(0) {};
+        Gesture(int a, int b): fingers(a),direction(b) {};
+        friend bool operator<(const Gesture& l, const Gesture& r ){
+            if(l.fingers!=r.fingers)
+                return l.fingers < r.fingers;
+            else
+                return l.direction < r.direction;
+        }
 };
 
 #endif

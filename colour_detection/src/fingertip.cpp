@@ -1,15 +1,17 @@
 #include "../include/fingertip.hpp"
 #include <cmath>
 
-Hand::Hand(Fingertip fingertips[], int number){
-    int x_cum=0, y_cum=0;
-    for(int i=0;i<number;i++){
-        x_cum += fingertips[i].x;
-        y_cum += fingertips[i].y;
+Hand::Hand(Fingertip fingertips[], int number):cv::Point(){
+    if(number>0){
+        int x_cum=0, y_cum=0;
+        cv::Point acc(0,0);
+        for(int i=0;i<number;i++){
+            acc +=fingertips[i];
+        }
+        x = acc.x/number;
+        y = acc.y/number;
     }
-    x = x_cum/number;
-    y = y_cum/number;
-    fingers = number;
+        fingers = number;
 }
 
 void Hand::distanceAndDirectionFrom(Hand& a, int& distance, int& direction){
