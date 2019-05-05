@@ -40,6 +40,7 @@ void FingertipTrackingModule::track(Hand a){auto timenow =
                     last = buffer.back();
                     Gesture ges(last.fingers, direction);
                     gm.execute(ges);
+                    gm.newExecute(buffer);
                     Mat pic = cv::Mat::zeros(125,250,CV_8U);
                     std::string str = std::to_string(buffer.back().fingers) + std::string(" Finger ");
                     std::string str1;
@@ -70,6 +71,8 @@ void FingertipTrackingModule::track(Hand a){auto timenow =
     Mat canvas = Mat::zeros(size, CV_8UC3);
     // circle(canvas, current, 5, Scalar(255, 255, 255), -1);
     
+
+
     for (int i = 0; i<count-1; i++) {
         line(canvas, buffer[i], buffer[i+1], Scalar(255, 255, 255), 2);
     }

@@ -10,6 +10,7 @@ class GestureExecutionModule{
     public:
         GestureExecutionModule();
         void execute(Gesture ges);
+        void newExecute(std::deque<Hand>&);
 };
 
 #endif

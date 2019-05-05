@@ -2,43 +2,44 @@
 #include <cmath>
 #include <algorithm>
 #include <utility>
-#include "../include/TimeSeriesUtils.hpp"
+#include <opencv2/opencv.hpp>
+#include "../include/dtw_distance.hpp"
 
-double mod(PDD& p) {
-	return std::pow(p.first, 2) + std::pow(p.second, 2);
+double mod(pt& p) {
+	return std::pow(p.x, 2) + std::pow(p.y, 2);
 }
 
-bool comp(PDD& a, PDD& b) {
+bool comp(pt& a, pt& b) {
 	return mod(a) < mod(b);
 }
 
-void normalize(std::vector<PDD>& v) {
+void normalize(std::deque<pt>& v) {
 	auto max_pt = std::max_element(v.begin(), v.end(), comp);
 	auto min_pt = std::min_element(v.begin(), v.end(), comp);
 	
-	double max_x = max_pt->first, max_y = max_pt->second, min_x = min_pt->first, min_y = min_pt->second;
+	double max_x = max_pt->x, max_y = max_pt->y, min_x = min_pt->x, min_y = min_pt->y;
 
 	double divmod = std::sqrt(std::pow(max_x - min_x, 2) + std::pow(max_y - min_y, 2));
 
-	std::for_each(v.begin(), v.end(), [min_x, min_y, divmod](PDD& p) {
-		p.first -= min_x;
-		p.first /= divmod;
-		p.second -= min_y;
-		p.second /= divmod;
-		std::cout << p.first << " " << p.second << "\n";
+	std::for_each(v.begin(), v.end(), [min_x, min_y, divmod](pt& p) {
+		p.x -= min_x;
+		p.x /= divmod;
+		p.y -= min_y;
+		p.y /= divmod;
+		std::cout << p.x << " " << p.y << "\n";
 	});
 }
 
 namespace TimeSeriesUtils {
 
-	double CalculateEuclideanDistance(PDD& p1, PDD& p2) {
-		return std::sqrt(std::pow((p1.first - p2.first), 2) + std::pow((p1.second - p2.second), 2));
+	double CalculateEuclideanDistance(pt& p1, pt& p2) {
+		return std::sqrt(std::pow((p1.x - p2.x), 2) + std::pow((p1.y - p2.y), 2));
 	}	
 
-	double CalculateDynamicTimeWarpedDistance(std::vector<PDD>& t0, std::vector<PDD>& t1) {
+	double CalculateDynamicTimeWarpedDistance(std::deque<pt>& t0, std::deque<pt>& t1) {
 		
-        normalize(timeSeries0);
-		normalize(timeSeries1);
+        normalize(t0);
+		normalize(t1);
 
 		size_t m = t0.size();
 		size_t n = t1.size();

@@ -1,16 +1,18 @@
 #ifndef TSUTIL_H
 #define TSUTIL_H
 
+#include <opencv2/opencv.hpp>
 #include <vector>
 #include <cstdint>
+#include "fingertip.hpp"
 
-typedef std::pair<double, double> PDD;
+typedef Hand pt;
 
 namespace TimeSeriesUtils {
 	
-	double CalculateEuclideanDistance(PDD&, PDD&);
+	double CalculateEuclideanDistance(pt&, pt&);
 
-	double CalculateDynamicTimeWarpedDistance(std::vector<PDD>& t0, std::vector<PDD>& t1);
+	double CalculateDynamicTimeWarpedDistance(std::deque<pt>& t0, std::deque<pt>& t1);
 	
 }
 
