@@ -12,8 +12,8 @@
 using namespace cv;
 
 class FingertipTrackingModule {
-    std::deque<Hand> buffer,jitter;
-    int count, direction, pos=0;
+    std::deque<Hand> buffer, jitter;
+    int count, direction, pos = 0;
     GestureExecutionModule gm;
     Hand current;
     Size size;
@@ -21,8 +21,8 @@ class FingertipTrackingModule {
 
     public:
         bool size_set=false;
-        FingertipTrackingModule(Mat& a): buffer(),jitter(),count(0),direction(0),pos(1),can(a),size_set(false),size(),gm(){};
-        void set_size(Size a){ size=a; size_set=true; };
+        FingertipTrackingModule(Mat& a): buffer(), jitter(), count(0), direction(0), pos(1), can(a), size_set(false), size(), gm() {};
+        void set_size(Size a){ size = a; size_set = true; };
         void track(Hand a);
         void flush();
 };

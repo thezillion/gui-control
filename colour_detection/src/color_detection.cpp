@@ -74,7 +74,7 @@ void ColorDetectionModule::setHSVColors(Mat image){
     iHighV=std::min(255,(int)maxval+V_RANGE);
 
     color_set=true;
-    // showTrackbars();
+    showTrackbars();
     destroyWindow("Select Color");
 }
 

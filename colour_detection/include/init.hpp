@@ -2,6 +2,7 @@
 #define INIT_MODULE
 
 #include <opencv2/opencv.hpp>
+#include <chrono>
 
 using namespace cv;
 
