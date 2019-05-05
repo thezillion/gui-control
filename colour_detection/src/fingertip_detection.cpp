@@ -20,7 +20,6 @@ void FingertipDetectionModule::thresh_callback() {
     /// Detect edges using Threshold
     threshold( src_copy, threshold_output, thresh, 255, THRESH_BINARY );
 
-
     /// Find contours
     findContours( threshold_output, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE, Point(0, 0) );
     // find moments of the image
@@ -31,7 +30,7 @@ void FingertipDetectionModule::thresh_callback() {
     Mat drawing2 = Mat::zeros( threshold_output.size(), CV_8UC3 );
     Fingertip fingers[4];
     int j=0;
-    for(int i=0; i< contours.size(); i++){
+    for(int i=0; i < contours.size(); i++) {
         Moments m = moments(contours[i], true);
         if(m.m00<100) continue;
         Point p(m.m10/m.m00, m.m01/m.m00);
@@ -42,7 +41,7 @@ void FingertipDetectionModule::thresh_callback() {
         
         // show the image with a point mark at the centroid
         circle(moms, p, 5, Scalar(255, 255, 255), -1);
-        if(j<4){
+        if(j < 4) {
             fingers[j] = Fingertip(p.x, p.y);
             j++;
         }

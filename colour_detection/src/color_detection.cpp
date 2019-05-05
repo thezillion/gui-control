@@ -37,7 +37,7 @@ void ColorDetectionModule::getColor() {
                 colourCopy=color.clone();
 
     morphologyEx( colourCopy ,color, MORPH_CLOSE, kernel);
-    // imshow("EdgeFeed", color);
+    imshow("EdgeFeed", color);
 
     ftdm.thresh_callback();
 }
@@ -58,20 +58,26 @@ void ColorDetectionModule::setHSVColors(Mat image){
 
     
     iLowH=std::max((int)minval-H_RANGE,0);
+    iLowH = 0;
     std::cout<<minval-H_RANGE<<" ";
     iHighH=std::min((int)maxval+H_RANGE,179);
+    iHighH = 83;
     std::cout<<iHighH<<std::endl;
     // minMaxLoc( channels[1], &minval, &maxval, &minidx, &maxidx);
     temp= mean(channels[1]);
     minval=maxval=temp[0];
     iLowS=std::max((int)minval-S_RANGE,0);
+    iLowS = 62;
     iHighS=std::min((int)maxval+S_RANGE,255);
+    iHighS = 180;
     // minMaxLoc( channels[2], &minval, &maxval, &minidx, &maxidx);
     
     temp= mean(channels[2]);
     minval=maxval=temp[0];
     iLowV=std::max(0,(int)minval-V_RANGE);
     iHighV=std::min(255,(int)maxval+V_RANGE);
+    iLowV = 150;
+    iHighV = 255;
 
     color_set=true;
     showTrackbars();

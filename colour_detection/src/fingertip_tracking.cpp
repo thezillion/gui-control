@@ -4,8 +4,8 @@
 #include "../include/fingertip_tracking.hpp"
 #include "../include/gesture_execution.hpp"
 
-void FingertipTrackingModule::track(Hand a){auto timenow = 
-    std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+void FingertipTrackingModule::track(Hand a){
+    auto timenow = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
     int dis, dir;
     if (count > 0 && a.fingers == 0) {
         flush();
@@ -28,18 +28,19 @@ void FingertipTrackingModule::track(Hand a){auto timenow =
             std::cout << ctime(&timenow) << "Too slow. Buffer flushed!\n";
             flush();
         } else {
-            if (direction != 0 && direction != dir) {
-                if (jitter.size() <= 2) {
-                    jitter.push_back(a);
-                } else{
-                    std::cout << ctime(&timenow) << "Too much jitter in direction. Buffer flushed!\n";
-                    flush();
-                }
-            } else {
+            // if (direction != 0 && direction != dir) {
+            //     if (jitter.size() <= 2) {
+            //         jitter.push_back(a);
+            //     } else{
+            //         std::cout << ctime(&timenow) << "Too much jitter in direction. Buffer flushed!\n";
+            //         flush();
+            //     }
+            // } else {
                 if (count > BUFFER_SIZE) {
                     last = buffer.back();
                     Gesture ges(last.fingers, direction);
                     gm.execute(ges);
+                    // std::cout << buffer[0] << " " << buffer[10] << "\n";
                     gm.newExecute(buffer);
                     Mat pic = cv::Mat::zeros(125,250,CV_8U);
                     std::string str = std::to_string(buffer.back().fingers) + std::string(" Finger ");
@@ -64,7 +65,7 @@ void FingertipTrackingModule::track(Hand a){auto timenow =
                     count++;
                     direction = dir;
                 }
-            }
+            // }
         }
     }
 
