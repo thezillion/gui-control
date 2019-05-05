@@ -14,7 +14,7 @@ void InitModule::loop(VideoCapture &cap) {
     start = std::chrono::system_clock::now();
     for(;;) {
         cap >> frame; // get a new frame from camera
-        imshow("CameraFeed", frame);
+        // imshow("CameraFeed", frame);
 
         int c = waitKey(30);
         if(c != 27){

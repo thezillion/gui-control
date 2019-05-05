@@ -52,27 +52,10 @@ void FingertipDetectionModule::thresh_callback() {
         drawContours( drawing, hull, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
         // fillConvexPoly( drawing2, contours[i], 255);
     }
-    Mat pic = cv::Mat::zeros(125,250,CV_8U);
-    if(j>0){
-        int direction, distance;
-        Hand h(fingers, j);
-        if(current.x==0 && current.y==0)
-            current = h;
-        else
-            current.distanceAndDirectionFrom(h,distance,direction);
-        string str = string("Position: ") + to_string(h.x) + string(" ") + to_string(h.y);
-        string str1 = string("Distance: ") + to_string(distance);
-        string str2 = string("Direction: ") + to_string(direction);
-        putText(pic, str,cv::Point(25,25), FONT_HERSHEY_SIMPLEX, 0.5,    cv::Scalar(255),1,8,false);
-        putText(pic, str1,cv::Point(25,50), FONT_HERSHEY_SIMPLEX, 0.5,    cv::Scalar(255),1,8,false);
-        putText(pic, str2,cv::Point(25,75), FONT_HERSHEY_SIMPLEX, 0.5,    cv::Scalar(255),1,8,false);
-    }
-    else{
-        string str = string("Not enough!!");
-        putText(pic, str,cv::Point(25,25), FONT_HERSHEY_SIMPLEX, 0.5,    cv::Scalar(255),1,8,false);
-    }
-    imshow( "Stats", pic);
-
-    imshow( "Hull demo", drawing );
+    Hand h(fingers, j);
+    if(!fttm.size_set)
+        fttm.set_size(threshold_output.size());
+    fttm.track(h);
+    // imshow( "Hull demo", drawing );
     imshow( "Points", moms);
 }

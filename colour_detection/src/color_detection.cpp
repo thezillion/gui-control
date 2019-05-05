@@ -27,7 +27,17 @@ void ColorDetectionModule::getColor() {
     cvtColor(frame, imgHSV, COLOR_BGR2HSV);
     inRange(imgHSV, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), color);
     // inRange(imgHSV, Scalar(19, 24, 83), Scalar(86, 142, 255), colour);
-    imshow("EdgeFeed", color);
+    int morph_size=2;
+    Mat kernel = getStructuringElement( MORPH_ELLIPSE, Size( 2*morph_size + 1, 2*morph_size+1 ), Point( morph_size, morph_size ) );
+    // Creating kernel matrix
+    //   Mat kernel = Mat.ones(5,5, CV_32F);
+    // Apply the specified morphology operation
+    Mat colourCopy=color.clone();
+    morphologyEx( colourCopy, color, MORPH_OPEN, kernel);
+                colourCopy=color.clone();
+
+    morphologyEx( colourCopy ,color, MORPH_CLOSE, kernel);
+    // imshow("EdgeFeed", color);
 
     ftdm.thresh_callback();
 }
@@ -64,7 +74,7 @@ void ColorDetectionModule::setHSVColors(Mat image){
     iHighV=std::min(255,(int)maxval+V_RANGE);
 
     color_set=true;
-    showTrackbars();
+    // showTrackbars();
     destroyWindow("Select Color");
 }
 
