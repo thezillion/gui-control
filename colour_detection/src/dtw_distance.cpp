@@ -23,7 +23,10 @@ void normalize(std::deque<pt>& v, std::vector<PDD>& norm) {
 
 	double divmod = std::sqrt(std::pow(max_x - min_x, 2) + std::pow(max_y - min_y, 2));
 
+	std::cout << "\n\nStarting normalization\n\n";
+
 	std::for_each(v.begin(), v.end(), [min_x, min_y, divmod, &norm, &norm_x, &norm_y](pt& p) {
+		std::cout << "gesture.push_back(Hand(" << p.x << ", " << p.y << "));\n";
 		p.x -= min_x;
 		p.x /= divmod;
 		p.y -= min_y;

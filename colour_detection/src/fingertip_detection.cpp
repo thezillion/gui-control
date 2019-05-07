@@ -4,11 +4,12 @@
 
 #include "../include/fingertip_detection.hpp"
 #include "../include/fingertip.hpp"
+// #include "../include/hpp"
 
 using namespace cv;
 using namespace std;
 
-void FingertipDetectionModule::thresh_callback() {
+void FingertipDetectionModule::thresh_callback(int keypress) {
     /** @function thresh_callback */
     Mat src_copy = colour.clone();
     Mat threshold_output;
@@ -51,9 +52,15 @@ void FingertipDetectionModule::thresh_callback() {
         drawContours( drawing, hull, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
         // fillConvexPoly( drawing2, contours[i], 255);
     }
+
     Hand h(fingers, j);
+    
     if(!fttm.size_set)
         fttm.set_size(threshold_output.size());
+
+    if (keypress == 32)
+        fttm.toggleTracking();
+
     fttm.track(h);
     // imshow( "Hull demo", drawing );
     imshow( "Points", moms);

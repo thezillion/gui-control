@@ -8,7 +8,7 @@
 using namespace cv;
 using namespace std;
 
-void InitModule::loop(VideoCapture &cap) {
+void InitModule::loop(VideoCapture &cap, int keypress) {
     Mat frame0, frame, imgHSV;
     ColorDetectionModule cdm(frame);
     start = std::chrono::system_clock::now();
@@ -16,8 +16,8 @@ void InitModule::loop(VideoCapture &cap) {
         cap >> frame; // get a new frame from camera
         // imshow("CameraFeed", frame);
 
-        int c = waitKey(30);
-        if(c != 27){
+        keypress = waitKey(30);
+        if(keypress != 27){
             if(cdm.color_set){
                 auto end = std::chrono::system_clock::now();
                 std::chrono::duration<double> elapsed_seconds = end-start;
@@ -32,7 +32,7 @@ void InitModule::loop(VideoCapture &cap) {
                     // imshow("Blur2", frame);
 
                     // c.thresh_callback();
-                    cdm.getColor();
+                    cdm.getColor(keypress);
                 }
             }
             else
@@ -46,5 +46,5 @@ void InitModule::loop(VideoCapture &cap) {
 }
 
 void InitModule::init(VideoCapture &cap) {
-    loop(cap);
+    loop(cap, keypress);
 }

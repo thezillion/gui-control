@@ -4,6 +4,7 @@
 #include "fingertip.hpp"
 #include <map>
 #include <string>
+#include <deque>
 
 class GestureExecutionModule{
     std::map<Gesture,std::string> saved_gestures;

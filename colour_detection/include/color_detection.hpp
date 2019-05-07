@@ -24,7 +24,7 @@ class ColorDetectionModule {
     void setHSVColors(Mat image);
     void colorSelect(Mat image);
     void showTrackbars();
-    void getColor();
+    void getColor(int);
 };
 
 #endif

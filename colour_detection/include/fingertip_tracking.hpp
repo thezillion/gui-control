@@ -18,6 +18,7 @@ class FingertipTrackingModule {
     Hand current;
     Size size;
     Mat can;
+    bool isTracking;
 
     public:
         bool size_set=false;
@@ -25,6 +26,7 @@ class FingertipTrackingModule {
         void set_size(Size a){ size = a; size_set = true; };
         void track(Hand a);
         void flush();
+        void toggleTracking();
 };
 
 #endif

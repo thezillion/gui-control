@@ -11,9 +11,11 @@ class InitModule {
 
     public:
 
-    void loop(VideoCapture&);
+    void loop(VideoCapture&, int);
 
     void init(VideoCapture&);
+
+    int keypress;
 
 };
 

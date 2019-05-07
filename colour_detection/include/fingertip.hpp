@@ -21,7 +21,7 @@ class Hand : public cv::Point {
         Hand(Fingertip fingers[], int number);
         Hand(int a, int b) : cv::Point(a, b) {};
         int fingers;
-        void distanceAndDirectionFrom(Hand& a, int& distance, int& direction);
+        void distanceAndDirectionFrom(Hand&, int&, int&, int&);
 };
 
 class Gesture{
